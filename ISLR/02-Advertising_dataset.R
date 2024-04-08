@@ -12,13 +12,12 @@ Advertising_tidy <- read_csv("data/Advertising.csv") |>
     values_to = "budget"
   )
 
-Advertising_tidy |> 
+# pivot_wider undoes pivot_longer
+Advertising <- Advertising_tidy |> 
   pivot_wider(
     names_from = media,
     values_from = budget
   )
-
-Advertising <- read_csv("data/Advertising.csv")
 
 # plotting
 Advertising_tidy |> 
@@ -36,25 +35,29 @@ train <- Advertising |>
 test <- anti_join(Advertising, train)
 
 # initial model
-model <- lm(sales ~ TV+radio+newspaper, train)
-summary(model)
+model1 <- lm(sales ~ TV+radio+newspaper, train)
+model2 <- lm(sales ~ (TV+radio+newspaper)^2, train)
+model3 <- lm(sales ~ (TV+radio+newspaper)^3, train)
 
-rmse = (test$sales-predict(model, test))^2 |> mean() |> sqrt()
-rmse
+# checking test error
+mse1 <- (test$sales - predict(model1, test))^2 |> mean()
+mse2 <- (test$sales - predict(model2, test))^2 |> mean()
+mse3 <- (test$sales - predict(model3, test))^2 |> mean()
+
+# select model2
 
 # removing bad variables
 library(MASS)
-model2 <- stepAIC(model)
-summary(model2)
+model2 |> summary()
+stepAIC(model2) |> summary()
+model2_step <- stepAIC(model2)
 
 # comparing prediction to actual value
-test$predicted_sales <- predict(model2, test)
+test$predicted_sales <- predict(model2_step, test)
 test |> 
   ggplot(aes(x = sales, y = predicted_sales)) +
-  geom_point()+
+  geom_point() +
   geom_abline()
 
-mean(model2$residuals^2) |> sqrt()
-
-rmse2 = (test$sales-test$predicted_sales)^2 |> mean() |> sqrt()
-rmse2
+# reduced mse by 0.0074
+mse2_step <- (test$sales - test$predicted_sales)^2 |> mean()
