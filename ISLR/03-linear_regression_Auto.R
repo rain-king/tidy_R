@@ -1,7 +1,7 @@
 library(ISLR2)
 library(MASS)
 library(tidyverse)
-source("analysis_tools.R")
+source("regression_analysis.R")
 
 DATASET <- Auto |> dplyr::select(-name)
 DATASET |> View()
