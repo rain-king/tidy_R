@@ -1,2 +1,2 @@
 # tidy_R
-Some R scripts
+Some data analysis R scripts
