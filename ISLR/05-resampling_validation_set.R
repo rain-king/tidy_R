@@ -5,7 +5,7 @@ source('regression_analysis.R')
 
 set.seed(1)
 
-Auto <- Auto |> 
+Auto <- Auto |>
   dplyr::select(-name)
 
 # training+validation set index, split 0.7+0.15+0.15 
@@ -36,4 +36,13 @@ summary(model3)
 R_squared3 <- R2(Auto$mpg[train_valid][validation],
                 predict(model3, Auto)[train_valid][validation])
 
+model4 <- stepAIC(model3)
+summary(model4)
+R_squared4 <- R2(Auto$mpg[train_valid][validation],
+                predict(model4, Auto)[train_valid][validation])
+
+# train using the whole train+validation set
+model3 <- lm(formula = mpg ~ cylinders + horsepower + weight + year + origin + 
+               poly(displacement, 2, raw = T), data = Auto[train_valid,])
+summary(model3)
 R_squared3_test <- R2(Auto$mpg[test], predict(model3, Auto)[test])
