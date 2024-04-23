@@ -39,4 +39,4 @@ test |>
     PassengerId = passenger_id,
     Survived = survived
   ) |>
-  write_csv("data/predicted.csv")
+  write_csv("data/lr_predicted.csv")
