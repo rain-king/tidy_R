@@ -15,8 +15,9 @@ train$age[is.na(train$age)] <- mean(train$age, na.rm = T)
 test$age[is.na(test$age)] <- mean(test$age, na.rm = T)
 
 # train |> filter(if_any(everything(), is.na))
+# train |> na.omit()
 
-model1 <- glm(survived ~ ., data = train, family = "binomial")
+model1 <- glm(survived ~ . - passenger_id, data = train, family = "binomial")
 summary(model1)
 cv.glm(train |> na.omit(), model1, K = 10)$delta[1]
 
