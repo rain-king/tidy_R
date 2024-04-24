@@ -91,6 +91,20 @@ gbm.fit5 <- gbm(
 gbm.fit5
 lowest_error5 <- min(gbm.fit5$cv.error)
 
+gbm.fit6 <- gbm(
+  formula = survived ~ . - passenger_id,
+  distribution = 'bernoulli',
+  data = train,
+  n.trees = 50000,
+  interaction.depth = 1,
+  shrinkage = 0.001,
+  cv.folds = 10,
+  n.cores = 2,
+  verbose = F
+)
+gbm.fit6
+lowest_error6 <- min(gbm.fit6$cv.error)
+
 summary(
   gbm.fit1, 
   cBars = 10,
