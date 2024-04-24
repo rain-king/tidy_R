@@ -31,6 +31,7 @@ library(fastDummies)
 train_reg <- train |> dummy_cols() |> select(-c(sex, embarked, pclass))
 test_reg <- test |> dummy_cols() |> select(-c(sex, embarked, pclass))
 
+### SCALING
 library(glmnet)
 train_reg
 train_norm <- train_reg |> mutate(
@@ -46,6 +47,7 @@ test_norm <- test_reg |> mutate(
   fare = scale(fare)[,1]
 )
 
+# MATRIX FORM FOR FITTING IN GLMNET
 X_train <- train_norm |> select(-c(passenger_id, survived))
 y_train <- train_norm |> select(survived)
 X_test <- test_norm |> select(-c(passenger_id))
@@ -62,10 +64,10 @@ ridge.predicted <- predict(ridge, ridge$lambda.1se,
                            new = X_test |> as.matrix(),
                            type = 'response')
 
-
 survived <- rep(0, nrow(X_test))
 survived[ridge.predicted > 0.5] <- 1
 
+# WRITING TO FILE
 test['survived'] <- survived
 test |>
   dplyr::select(passenger_id, survived) |> 
